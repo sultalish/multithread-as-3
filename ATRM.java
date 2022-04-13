@@ -1,3 +1,7 @@
+
+// Alisher Sultangazin
+// Problem 2: Atmospheric Temperature Reading Module (50 points)
+
 import java.util.*;
 import java.util.concurrent.atomic.*;
 import java.util.concurrent.locks.Lock;
