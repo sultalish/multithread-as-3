@@ -87,12 +87,12 @@ class Servant implements Runnable {
     }
 }
 
-class Node {
+class Gift {
 
     int tag;
-    Node next;
+    Gift next;
 
-    public Node(int tag) {
+    public Gift(int tag) {
         this.tag = tag;
         this.next = null;
     }
@@ -101,7 +101,7 @@ class Node {
 class GiftsList {
 
     int num = 0;
-    Node head;
+    Gift head;
     Random rand = new Random();
     Lock lock = new ReentrantLock();
     AtomicInteger action = new AtomicInteger();
@@ -111,8 +111,8 @@ class GiftsList {
     String servant = new String(Thread.currentThread().getName());
 
     public GiftsList(AtomicBoolean finished) {
-        head = new Node(Integer.MIN_VALUE);
-        head.next = new Node(Integer.MAX_VALUE);
+        head = new Gift(Integer.MIN_VALUE);
+        head.next = new Gift(Integer.MAX_VALUE);
         this.finished = finished;
     }
 
@@ -122,21 +122,21 @@ class GiftsList {
         lock.lock();
         try {
             if (isEmpty()) {
-                Node newNode = new Node(item);
-                head = newNode;
+                Gift newGift = new Gift(item);
+                head = newGift;
                 head.next = null;
                 System.out.printf("%s - Tag%d: Present is added.\n", servant, item);
                 size.incrementAndGet();
             } else {
-                Node pred = head;
+                Gift pred = head;
 
                 while (pred.next != null && pred.next.tag < item) {
                     pred = pred.next;
                 }
 
-                Node newNode = new Node(item);
-                newNode.next = pred.next;
-                pred.next = newNode;
+                Gift newGift = new Gift(item);
+                newGift.next = pred.next;
+                pred.next = newGift;
 
                 size.incrementAndGet();
                 System.out.printf("%s - Tag %d: Present is added.\n", servant, item);
@@ -155,18 +155,13 @@ class GiftsList {
         try {
             if (!isEmpty()) {
 
-                Node pred = head;
-
+                Gift pred = head;
+                if (pred.tag != Integer.MIN_VALUE && pred.tag != Integer.MAX_VALUE)
+                    System.out.printf("%s - THANK YOU FOR YOUR PRESENT %d.\n", servant, pred.tag);
                 if (pred.next != null) {
-                    if (pred.tag != Integer.MIN_VALUE && pred.tag != Integer.MAX_VALUE)
-                        System.out.printf("%s - THANK YOU FOR PRESENT %d.\n", servant, pred.tag);
                     head = pred.next;
                 } else {
-                    if (pred.tag != Integer.MIN_VALUE && pred.tag != Integer.MAX_VALUE)
-                        System.out.printf("%s - THANK YOU FOR PRESENT %d.\n", servant, pred.tag);
-
                     head = null;
-
                 }
 
                 counter.getAndIncrement();
@@ -186,7 +181,7 @@ class GiftsList {
             if (isEmpty()) {
                 System.out.printf("%s - Gift %d is not presented in the list.\n", servant, item);
             } else {
-                Node pred = head;
+                Gift pred = head;
 
                 if (pred.tag == item)
                     System.out.printf("%s - Gift %d is presented in the list.\n", servant, item);
